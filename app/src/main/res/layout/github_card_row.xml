@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="3.dp"
+    android:padding="5.dp">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/imgContainerCard"
+        android:layout_width="60.dp"
+        android:layout_height="60.dp"
+        app:cardCornerRadius="20.dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imgDiscordCard"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/tvUsername"
+        android:layout_width="0.dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:textSize="20.dp"
+        android:textStyle="bold"
+        android:ellipsize="end"
+        app:layout_constraintStart_toEndOf="@+id/imgContainerCard"
+        app:layout_constraintEnd_toStartOf="@id/favButton"
+        app:layout_constraintTop_toTopOf="@+id/imgContainerCard"
+        tools:text="u.diama" />
+
+    <ImageButton
+        android:id="@+id/favButton"
+        android:layout_width="wrap_content"
+        android:layout_height="30.dp"
+        android:backgroundTint="#00FFFFFF"
+        android:minHeight="1.dp"
+        android:src="@drawable/ic_fav_disable"
+        app:layout_constraintBottom_toBottomOf="@id/tvUsername"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tvUsername" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="wrap_content"
+        android:layout_height="1.5dp"
+        android:background="@color/md_theme_light_primary"
+        app:layout_constraintStart_toStartOf="@+id/tvUsername"
+        app:layout_constraintTop_toBottomOf="@+id/tvUsername" />
+
+    <TextView
+        android:id="@+id/tvNodeID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4.dp"
+        android:background="@drawable/frame"
+        android:paddingHorizontal="8.dp"
+        android:paddingVertical="2.dp"
+        android:textSize="9.dp"
+        app:layout_constraintStart_toStartOf="@+id/divider"
+        app:layout_constraintTop_toBottomOf="@+id/divider"
+        tools:text="MDQ6VXNlcjQ=" />
+
+    <TextView
+        android:id="@+id/tvID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5.dp"
+        android:background="@drawable/frame"
+        android:paddingHorizontal="8.dp"
+        android:paddingVertical="2.dp"
+        android:textSize="9.dp"
+        app:layout_constraintBottom_toBottomOf="@id/tvNodeID"
+        app:layout_constraintStart_toEndOf="@+id/tvNodeID"
+        app:layout_constraintTop_toTopOf="@id/tvNodeID"
+        tools:text="ID - 4" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

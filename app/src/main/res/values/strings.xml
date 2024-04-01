@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Dicoding Submission - Aplikasi GitHub User</string>
+    <string name="searchbar_hint">Cari username</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_main">Github User</string>
+    <string name="subtitle_main">List of Github user data from Github-API</string>
+    <string name="discord_image_profile">discord image profile</string>
+    <string name="tab_user_following">Following</string>
+    <string name="tab_user_followers">Followers</string>
+    <string name="bookmarked_user">Bookmarked User</string>
+    <string name="bookmark_user_subtitle">List of user that you maybe like.</string>
+</resources>
