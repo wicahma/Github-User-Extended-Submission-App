@@ -9,11 +9,9 @@ import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.dicoding.dicodingsubmission_aplikasigithubuserextended.R
 import com.dicoding.dicodingsubmission_aplikasigithubuserextended.data.Result
-import com.dicoding.dicodingsubmission_aplikasigithubuserextended.data.local.entity.UserEntity
 import com.dicoding.dicodingsubmission_aplikasigithubuserextended.databinding.FragmentUserDetailBinding
 import com.dicoding.dicodingsubmission_aplikasigithubuserextended.utils.Event
 import com.dicoding.dicodingsubmission_aplikasigithubuserextended.utils.SettingPreferences
@@ -68,15 +66,16 @@ class UserDetailFragment : Fragment() {
                     is Result.Success -> {
                         binding.progressBar.visibility = View.GONE
                         val user = result.data
-                        val profileUrl = user?.avatar_url ?: "https://source.boringavatars.com/beam/120?colors=264653,2a9d8f,e9c46a,f4a261,e76f51"
+                        val profileUrl = user?.avatar_url
+                            ?: "https://source.boringavatars.com/beam/120?colors=264653,2a9d8f,e9c46a,f4a261,e76f51"
                         Glide.with(requireContext()).load(profileUrl).into(binding.imgUserDetail)
                         val repo = "${user?.public_repos.toString()} Repo"
                         val followers = "${user?.followers.toString()} Followers"
                         val following = "${user?.following.toString()} Following"
-                        binding.tvUsernameDetail.text = user.login
+                        binding.tvUsernameDetail.text = user?.login
                         binding.tvFollowersDetail.text = followers
                         binding.tvFollowingsDetail.text = following
-                        binding.tvNameDetail.text = user.name
+                        binding.tvNameDetail.text = user?.name
                         binding.tvRepoDetail.text = repo
                     }
 
@@ -89,12 +88,16 @@ class UserDetailFragment : Fragment() {
         }
 
         binding.btnBrowser.setOnClickListener {
-            val shareIntent = Intent(Intent.ACTION_VIEW, Uri.parse("http://github.com/$dataUsername"))
+            val shareIntent =
+                Intent(Intent.ACTION_VIEW, Uri.parse("http://github.com/$dataUsername"))
             startActivity(shareIntent)
         }
 
         binding.btnShare.setOnClickListener {
-            val shareIntent = Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, "Hai, aku menemukan user github dengan profile yang unik, cek disini: http://github.com/$dataUsername")
+            val shareIntent = Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(
+                Intent.EXTRA_TEXT,
+                "Hai, aku menemukan user github dengan profile yang unik, cek disini: http://github.com/$dataUsername"
+            )
             startActivity(Intent.createChooser(shareIntent, "Share Via"))
         }
 

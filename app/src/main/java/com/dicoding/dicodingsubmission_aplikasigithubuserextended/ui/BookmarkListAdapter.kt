@@ -11,14 +11,14 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.dicoding.dicodingsubmission_aplikasigithubuserextended.R
-import com.dicoding.dicodingsubmission_aplikasigithubuserextended.data.local.entity.UserEntity
+import com.dicoding.dicodingsubmission_aplikasigithubuserextended.data.local.entity.UserBookmarkEntity
 import com.dicoding.dicodingsubmission_aplikasigithubuserextended.databinding.GithubCardRowBinding
 
-
-class UserListAdapter(private val fragment: Fragment) :
-    ListAdapter<UserEntity, UserListAdapter.UserViewHolder>(DIFF_CALLBACK) {
+class BookmarkListAdapter(private val fragment: Fragment) :
+    ListAdapter<UserBookmarkEntity, BookmarkListAdapter.BookmarkViewHolder>(DIFF_CALLBACK) {
     private lateinit var onItemClickCallback: OnItemClickCallback
     private lateinit var onItemLongPressCallback: OnBookmarkLongPressCallback
+
 
     fun setOnItemClickCallback(onItemClickCallback: OnItemClickCallback) {
         this.onItemClickCallback = onItemClickCallback
@@ -28,13 +28,13 @@ class UserListAdapter(private val fragment: Fragment) :
         this.onItemLongPressCallback = onItemLongPressCallback
     }
 
-    class UserViewHolder(
+    class BookmarkViewHolder(
         val binding: GithubCardRowBinding,
         private val fragment: Fragment,
         private val onItemClickCallback: OnItemClickCallback
     ) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(user: UserEntity) {
+        fun bind(user: UserBookmarkEntity) {
             val id = "ID - ${user.id}"
             binding.tvUsername.text = user.login
             binding.tvID.text = id
@@ -53,13 +53,14 @@ class UserListAdapter(private val fragment: Fragment) :
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): UserViewHolder {
+    ): BookmarkViewHolder {
         val binding =
             GithubCardRowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return UserViewHolder(binding, fragment, onItemClickCallback)
+        return BookmarkViewHolder(binding, fragment, onItemClickCallback)
     }
 
-    override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
+
+    override fun onBindViewHolder(holder: BookmarkViewHolder, position: Int) {
         val user = getItem(position)
         holder.bind(user)
 
@@ -88,12 +89,18 @@ class UserListAdapter(private val fragment: Fragment) :
     }
 
     companion object {
-        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<UserEntity>() {
-            override fun areItemsTheSame(oldItem: UserEntity, newItem: UserEntity): Boolean {
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<UserBookmarkEntity>() {
+            override fun areItemsTheSame(
+                oldItem: UserBookmarkEntity,
+                newItem: UserBookmarkEntity
+            ): Boolean {
                 return oldItem == newItem
             }
 
-            override fun areContentsTheSame(oldItem: UserEntity, newItem: UserEntity): Boolean {
+            override fun areContentsTheSame(
+                oldItem: UserBookmarkEntity,
+                newItem: UserBookmarkEntity
+            ): Boolean {
                 return oldItem == newItem
             }
 
@@ -101,10 +108,10 @@ class UserListAdapter(private val fragment: Fragment) :
     }
 
     interface OnItemClickCallback {
-        fun onItemClicked(data: UserEntity, view: View)
+        fun onItemClicked(data: UserBookmarkEntity, view: View)
     }
 
     interface OnBookmarkLongPressCallback {
-        fun onItemLongPressed(data: UserEntity, view: View)
+        fun onItemLongPressed(data: UserBookmarkEntity, view: View)
     }
 }

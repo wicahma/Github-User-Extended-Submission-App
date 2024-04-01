@@ -10,7 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
-import com.dicoding.dicodingsubmission_aplikasigithubuserextended.data.local.entity.UserEntity
+import com.dicoding.dicodingsubmission_aplikasigithubuserextended.data.local.entity.UserBookmarkEntity
 import com.dicoding.dicodingsubmission_aplikasigithubuserextended.databinding.FragmentBookmarkBinding
 import com.dicoding.dicodingsubmission_aplikasigithubuserextended.utils.Event
 import com.dicoding.dicodingsubmission_aplikasigithubuserextended.utils.SettingPreferences
@@ -43,13 +43,16 @@ class BookmarkFragment : Fragment() {
         }
     }
 
-    private fun setUserListData(userResponse: List<UserEntity>, viewModel: BookmarkViewModel) {
-        val adapter = UserListAdapter(this)
+    private fun setUserListData(
+        userResponse: List<UserBookmarkEntity>,
+        viewModel: BookmarkViewModel
+    ) {
+        val adapter = BookmarkListAdapter(this)
         adapter.submitList(userResponse)
         binding.rvBookmark.adapter = adapter
 
-        adapter.setOnItemClickCallback(object : UserListAdapter.OnItemClickCallback {
-            override fun onItemClicked(data: UserEntity, view: View) {
+        adapter.setOnItemClickCallback(object : BookmarkListAdapter.OnItemClickCallback {
+            override fun onItemClicked(data: UserBookmarkEntity, view: View) {
                 val toUserDetailFragment =
                     BookmarkFragmentDirections.actionBookmarkFragmentToUserDetailFragment(
                         data.login
@@ -58,8 +61,8 @@ class BookmarkFragment : Fragment() {
             }
         })
 
-        adapter.setOnItemBookmarkCallback(object : UserListAdapter.OnBookmarkLongPressCallback {
-            override fun onItemLongPressed(data: UserEntity, view: View) {
+        adapter.setOnItemBookmarkCallback(object : BookmarkListAdapter.OnBookmarkLongPressCallback {
+            override fun onItemLongPressed(data: UserBookmarkEntity, view: View) {
                 if (data.isBookmarked) {
                     viewModel.deleteUser(data)
                     setSnackBar(Event("Bookmark berhasil dihapus!"))
@@ -89,6 +92,4 @@ class BookmarkFragment : Fragment() {
         super.onDestroy()
         _binding = null
     }
-
-
 }

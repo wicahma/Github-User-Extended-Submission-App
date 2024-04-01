@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.dicoding.dicodingsubmission_aplikasigithubuserextended.data.UserRepository
-import com.dicoding.dicodingsubmission_aplikasigithubuserextended.data.local.entity.UserEntity
+import com.dicoding.dicodingsubmission_aplikasigithubuserextended.data.local.entity.UserBookmarkEntity
 import com.dicoding.dicodingsubmission_aplikasigithubuserextended.utils.SettingPreferences
 import kotlinx.coroutines.launch
 
@@ -24,7 +24,7 @@ class MainViewModel(
     }
 
     fun getAllUser() = userRepository.getAllUser()
-    fun saveUser(user: UserEntity) = userRepository.setBookmarkedUser(user, true)
-    fun deleteUser(user: UserEntity) = userRepository.setBookmarkedUser(user, false)
+    fun saveUser(user: UserBookmarkEntity) = userRepository.setBookmarkedUser(user, true)
+    fun deleteUser(user: UserBookmarkEntity) = userRepository.setBookmarkedUser(user, false)
     fun searchUser(username: String) = userRepository.searchUser(username)
 }

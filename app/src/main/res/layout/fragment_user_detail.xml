@@ -114,7 +114,7 @@
 
                 <ImageButton
                     android:id="@+id/btnBrowser"
-                    style="@style/ShapeAppearanceOverlay.Material3.Button"
+                    style="@style/UserDetailButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:backgroundTint="#00FFFFFF"
@@ -127,6 +127,7 @@
 
                 <ImageButton
                     android:id="@+id/btnShare"
+                    style="@style/UserDetailButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:backgroundTint="#00FFFFFF"

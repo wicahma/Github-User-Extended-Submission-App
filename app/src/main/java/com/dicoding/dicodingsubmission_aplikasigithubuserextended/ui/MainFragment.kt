@@ -12,6 +12,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
 import com.dicoding.dicodingsubmission_aplikasigithubuserextended.data.Result
+import com.dicoding.dicodingsubmission_aplikasigithubuserextended.data.local.entity.UserBookmarkEntity
 import com.dicoding.dicodingsubmission_aplikasigithubuserextended.data.local.entity.UserEntity
 import com.dicoding.dicodingsubmission_aplikasigithubuserextended.databinding.FragmentMainBinding
 import com.dicoding.dicodingsubmission_aplikasigithubuserextended.utils.Event
@@ -54,13 +55,11 @@ class MainFragment : Fragment() {
                     is Result.Loading -> {
                         binding.progressBar.visibility = View.VISIBLE
                     }
-
                     is Result.Success -> {
                         binding.progressBar.visibility = View.GONE
                         val userData = result.data
                         setUserListData(userData, mainViewModel)
                     }
-
                     is Result.Error -> {
                         binding.progressBar.visibility = View.GONE
                         setSnackBar(Event(result.error))
@@ -96,6 +95,26 @@ class MainFragment : Fragment() {
                     binding.searchBar.setText(searchView.text)
                     searchView.hide()
                     viewModel.searchUser(searchView.text.toString())
+                        .observe(viewLifecycleOwner) { result ->
+                            if (result != null) {
+                                when (result) {
+                                    is Result.Loading -> {
+                                        binding.progressBar.visibility = View.VISIBLE
+                                    }
+
+                                    is Result.Success -> {
+                                        binding.progressBar.visibility = View.GONE
+                                        val userData = result.data
+                                        setUserListData(userData, viewModel)
+                                    }
+
+                                    is Result.Error -> {
+                                        binding.progressBar.visibility = View.GONE
+                                        setSnackBar(Event(result.error))
+                                    }
+                                }
+                            }
+                        }
                     false
                 }
         }
@@ -118,10 +137,21 @@ class MainFragment : Fragment() {
 
         adapter.setOnItemBookmarkCallback(object : UserListAdapter.OnBookmarkLongPressCallback {
             override fun onItemLongPressed(data: UserEntity, view: View) {
+                val bookmarkEntity = UserBookmarkEntity(
+                    data.id,
+                    data.login,
+                    data.name,
+                    data.node_id,
+                    data.avatar_url,
+                    data.public_repos,
+                    data.followers,
+                    data.following,
+                    data.isBookmarked
+                )
                 if (data.isBookmarked) {
-                    viewModel.deleteUser(data)
+                    viewModel.deleteUser(bookmarkEntity)
                 } else {
-                    viewModel.saveUser(data)
+                    viewModel.saveUser(bookmarkEntity)
                 }
             }
 

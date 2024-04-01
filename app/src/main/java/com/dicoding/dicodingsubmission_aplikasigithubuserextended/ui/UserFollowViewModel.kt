@@ -6,11 +6,5 @@ import com.dicoding.dicodingsubmission_aplikasigithubuserextended.data.local.ent
 
 class UserFollowViewModel(private val userRepository: UserRepository):ViewModel() {
 
-    companion object {
-        private const val TAG = "UserFollowViewModel"
-    }
-
     fun getListFollow(username: String, fgmName: String) = userRepository.getListUserFollow(username, fgmName)
-    fun saveUser(user: UserEntity) = userRepository.setBookmarkedUser(user, true)
-    fun deleteUser(user: UserEntity) = userRepository.setBookmarkedUser(user, false)
 }

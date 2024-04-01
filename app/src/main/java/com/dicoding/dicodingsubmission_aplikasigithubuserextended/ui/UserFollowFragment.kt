@@ -18,11 +18,6 @@ class UserFollowFragment : Fragment() {
     private var _binding: FragmentUserFollowBinding? = null
     private val binding get() = _binding!!
 
-    companion object {
-        const val FOLLOW_TYPE = "follow_type"
-        const val USERNAME = "username"
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -30,7 +25,6 @@ class UserFollowFragment : Fragment() {
         _binding = FragmentUserFollowBinding.inflate(inflater, container, false)
         return binding.root
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -68,8 +62,8 @@ class UserFollowFragment : Fragment() {
                 }
         }
 
-
     }
+
 
     override fun onDestroy() {
         super.onDestroy()
@@ -96,5 +90,10 @@ class UserFollowFragment : Fragment() {
             override fun onItemLongPressed(data: UserEntity, view: View) {
             }
         })
+    }
+
+    companion object {
+        const val FOLLOW_TYPE = "follow_type"
+        const val USERNAME = "username"
     }
 }
