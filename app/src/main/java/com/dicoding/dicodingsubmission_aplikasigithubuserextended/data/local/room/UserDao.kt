@@ -5,7 +5,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Update
 import com.dicoding.dicodingsubmission_aplikasigithubuserextended.data.local.entity.UserEntity
 
 @Dao
@@ -25,10 +24,19 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertOneUser(user: UserEntity)
 
-    @Update
-    fun updateUser(user: UserEntity)
+    @Query("INSERT INTO user (id, login, node_id, avatar_url, bookmarked) VALUES (:id, :login, :nodeId, :avatar, :bookmarked) ON CONFLICT (id) DO UPDATE SET bookmarked = :bookmarked WHERE id=:id")
+    fun updateOrCreateUser(
+        id: Int,
+        login: String,
+        nodeId: String,
+        avatar: String?,
+        bookmarked: Boolean
+    )
 
-    @Query("delete from user where bookmarked = 0")
+    @Query("UPDATE user SET bookmarked=:bookmarked WHERE id = :id")
+    fun updateBookmarkUser(id: Int, bookmarked: Boolean)
+
+    @Query("delete from user")
     fun deleteAll()
 
     @Query("delete from user where id = :id")

@@ -2,7 +2,9 @@ package com.dicoding.dicodingsubmission_aplikasigithubuserextended.data
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import com.dicoding.dicodingsubmission_aplikasigithubuserextended.data.local.entity.UserBookmarkEntity
 import com.dicoding.dicodingsubmission_aplikasigithubuserextended.data.local.entity.UserEntity
+import com.dicoding.dicodingsubmission_aplikasigithubuserextended.data.local.room.BookmarkDao
 import com.dicoding.dicodingsubmission_aplikasigithubuserextended.data.local.room.UserDao
 import com.dicoding.dicodingsubmission_aplikasigithubuserextended.data.remote.response.User
 import com.dicoding.dicodingsubmission_aplikasigithubuserextended.data.remote.response.UserDetailResponse
@@ -16,6 +18,7 @@ import retrofit2.Response
 class UserRepository private constructor(
     private val apiService: ApiService,
     private val userDao: UserDao,
+    private val bookmarkDao: BookmarkDao,
     private val appExecutors: AppExecutors
 ) {
 
@@ -31,7 +34,7 @@ class UserRepository private constructor(
                     val newsList = ArrayList<UserEntity>()
                     appExecutors.diskIO.execute {
                         users?.forEach { user ->
-                            val isBookmarked = user.id?.let { userDao.isUserBookmarked(it) }
+                            val isBookmarked = user.id?.let { bookmarkDao.isUserBookmarked(it) }
                             val news = UserEntity(
                                 user.id!!,
                                 user.login!!,
@@ -48,6 +51,10 @@ class UserRepository private constructor(
                         userDao.deleteAll()
                         userDao.insertUser(newsList)
                     }
+                    val localData = userDao.getUser()
+                    result.addSource(localData) { newData: List<UserEntity> ->
+                        result.value = Result.Success(newData)
+                    }
                 }
             }
 
@@ -55,12 +62,6 @@ class UserRepository private constructor(
                 result.value = Result.Error(t.message.toString())
             }
         })
-        appExecutors.diskIO.execute {
-            val localData = userDao.getUser()
-            result.addSource(localData) { newData: List<UserEntity> ->
-                result.value = Result.Success(newData)
-            }
-        }
         return result
     }
 
@@ -78,7 +79,7 @@ class UserRepository private constructor(
                     val userList = ArrayList<UserEntity>()
                     appExecutors.diskIO.execute {
                         users?.forEach { user ->
-                            val isBookmarked = user?.id?.let { userDao.isUserBookmarked(it) }
+                            val isBookmarked = user?.id?.let { bookmarkDao.isUserBookmarked(it) }
                             val userData = UserEntity(
                                 user?.id!!,
                                 user.login!!,
@@ -95,6 +96,7 @@ class UserRepository private constructor(
                         userDao.deleteAll()
                         userDao.insertUser(userList)
                     }
+                    result.value = Result.Success(userList)
                 }
             }
 
@@ -102,12 +104,6 @@ class UserRepository private constructor(
                 result.value = Result.Error(t.message.toString())
             }
         })
-        appExecutors.diskIO.execute {
-            val localData = userDao.getUser()
-            result.addSource(localData) { newData: List<UserEntity> ->
-                result.value = Result.Success(newData)
-            }
-        }
         return result
     }
 
@@ -123,7 +119,7 @@ class UserRepository private constructor(
                 if (response.isSuccessful) {
                     appExecutors.diskIO.execute {
                         val userData = response.body()
-                        val isBookmarked = userDao.isUserBookmarked(userData?.id ?: 0)
+                        val isBookmarked = bookmarkDao.isUserBookmarked(userData?.id ?: 0)
                         val user = UserEntity(
                             userData?.id!!,
                             userData.login,
@@ -138,6 +134,10 @@ class UserRepository private constructor(
                         userDao.deleteOne(userData.id)
                         userDao.insertOneUser(user)
                     }
+                    val localData = userDao.getOneUser(username)
+                    result.addSource(localData) {
+                        result.value = Result.Success(it)
+                    }
                 }
             }
 
@@ -145,10 +145,6 @@ class UserRepository private constructor(
                 result.value = Result.Error(t.message.toString())
             }
         })
-        val localData = userDao.getOneUser(username)
-        result.addSource(localData) {
-            result.value = Result.Success(it)
-        }
         return result
     }
 
@@ -188,14 +184,19 @@ class UserRepository private constructor(
         return result
     }
 
-    fun getBookmarkedUser(): LiveData<List<UserEntity>> {
-        return userDao.getBookmarkedUser()
+    fun getBookmarkedUser(): LiveData<List<UserBookmarkEntity>> {
+        return bookmarkDao.getBookmarks()
     }
 
-    fun setBookmarkedUser(user: UserEntity, bookmarkState: Boolean) {
+    fun setBookmarkedUser(user: UserBookmarkEntity, bookmarkState: Boolean) {
         appExecutors.diskIO.execute {
             user.isBookmarked = bookmarkState
-            userDao.updateUser(user)
+            userDao.updateBookmarkUser(user.id, bookmarkState)
+            if (bookmarkState) {
+                bookmarkDao.insertOneBookmark(user)
+            } else {
+                bookmarkDao.deleteOneBookmark(user.id)
+            }
         }
     }
 
@@ -205,10 +206,11 @@ class UserRepository private constructor(
         fun getInstance(
             apiService: ApiService,
             userDao: UserDao,
+            bookmarkDao: BookmarkDao,
             appExecutors: AppExecutors
         ): UserRepository =
             instance ?: synchronized(this) {
-                instance ?: UserRepository(apiService, userDao, appExecutors)
+                instance ?: UserRepository(apiService, userDao, bookmarkDao, appExecutors)
             }.also { instance = it }
     }
 }

@@ -10,8 +10,9 @@ object Injection {
     fun provideRepository(context: Context): UserRepository {
         val apiService = ApiConfig.getApiService()
         val database = UserDatabase.getInstance(context)
-        val dao = database.userDao()
+        val userDao = database.userDao()
+        val bookmarkDao = database.bookmarkDao()
         val appExecutors = AppExecutors()
-        return UserRepository.getInstance(apiService, dao, appExecutors)
+        return UserRepository.getInstance(apiService, userDao, bookmarkDao, appExecutors)
     }
 }
